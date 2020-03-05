@@ -284,10 +284,10 @@ newline return an empty string."
 (defun helm-git-grep-submodule-grep-command ()
   "Create command of `helm-git-submodule-grep-process' in `helm-git-grep'."
   (list "git" "--no-pager" "submodule" "--quiet" "foreach"
-       (format "git grep -n --no-color %s %s %s %s | sed s!^!$path/!"
-               (if helm-git-grep-ignore-case "-i" "")
-               (if helm-git-grep-wordgrep "-w" "")
-               (helm-git-grep-showing-leading-and-trailing-lines-option t)
+        (format "git grep -n --no-color %s %s %s %s | sed s!^!$path/!"
+                (if helm-git-grep-ignore-case "-i" "")
+                (if helm-git-grep-wordgrep "-w" "")
+                (helm-git-grep-showing-leading-and-trailing-lines-option t)
                 (mapconcat (lambda (x)
                              (format "-e %s " (shell-quote-argument x)))
                            (split-string helm-pattern " +" t)
@@ -359,10 +359,10 @@ if MARK is t, Set mark."
                       (get-text-property (point-at-bol) 'help-echo))
                     (nth 2 candidate))))
     (case where
-          (other-window (find-file-other-window fname))
-          (other-frame  (find-file-other-frame fname))
-          (grep         (helm-git-grep-save-results-1))
-          (t            (find-file fname)))
+      (other-window (find-file-other-window fname))
+      (other-frame  (find-file-other-frame fname))
+      (grep         (helm-git-grep-save-results-1))
+      (t            (find-file fname)))
     (unless (or (eq where 'grep))
       (helm-goto-line lineno))
     (when mark
@@ -412,9 +412,9 @@ Argument SOURCE is not used."
     (filename lineno content)
   "Propertize FILENAME LINENO CONTENT and concatenate them."
   (format "%s:%s:%s"
-      (propertize filename 'face 'helm-git-grep-file)
-      (propertize lineno 'face 'helm-git-grep-line)
-      (helm-git-grep-highlight-match content)))
+          (propertize filename 'face 'helm-git-grep-file)
+          (propertize lineno 'face 'helm-git-grep-line)
+          (helm-git-grep-highlight-match content)))
 
 (defun helm-git-grep-highlight-match (content)
   "Highlight matched text with `helm-git-grep-match' face in CONTENT."
@@ -426,7 +426,7 @@ Argument SOURCE is not used."
 
 (defun helm-git-grep-filtered-candidate-transformer-file-line-1 (candidate)
   "Transform CANDIDATE to `helm-git-grep-mode' format."
-  ; truncate any very long lines
+                                        ; truncate any very long lines
   (when (> (length candidate) (window-width))
     (setq candidate (substring candidate 0 (window-width))))
 
@@ -454,7 +454,7 @@ Argument SOURCE is not used."
 With a prefix arg record CANDIDATE in `mark-ring'."
   (if current-prefix-arg
       (helm-git-grep-action candidate nil 'mark)
-      (helm-git-grep-action candidate))
+    (helm-git-grep-action candidate))
   (helm-highlight-current-line))
 
 (defun helm-git-grep-get-region-substring ()
@@ -493,7 +493,7 @@ With a prefix arg record CANDIDATE in `mark-ring'."
 
 (defun helm-git-grep-concat-string-list (list)
   "Concatenate string LIST separated by a space."
-   (mapconcat 'identity(delq nil list) " "))
+  (mapconcat 'identity(delq nil list) " "))
 
 (defun helm-git-grep-header-name (name)
   "Create header NAME for `helm-git-grep'."
@@ -590,8 +590,8 @@ which is defined by `helm-git-grep-pathspecs'."
           (insert (format "git ls-files %s\n\n"
                           (helm-git-grep-concat-string-list args))))
         (when (apply 'call-process "git" nil buf nil
-                         (append '("ls-files") args)))
-          (display-buffer buf))
+                     (append '("ls-files") args)))
+        (display-buffer buf))
     (message helm-git-grep-pathspec-disabled-message)))
 
 (defvar helm-git-grep-help-message
@@ -667,11 +667,14 @@ You can save your results in a helm-git-grep-mode buffer, see below.
 
 (defvar helm-git-grep-source
   (helm-make-source "Git Grep" 'helm-git-grep-class
-    :candidates-process 'helm-git-grep-process))
+    :candidates-process 'helm-git-grep-process
+    :follow (and helm-follow-mode-persistent 1)))
 
 (defvar helm-git-grep-submodule-source
   (helm-make-source "Git Submodule Grep" 'helm-git-grep-class
-    :candidates-process 'helm-git-grep-submodule-grep-process))
+    :candidates-process 'helm-git-grep-submodule-grep-process
+    :follow (and helm-follow-mode-persistent 1)))
+
 
 (defun helm-git-grep-1 (&optional input)
   "Execute helm git grep.
